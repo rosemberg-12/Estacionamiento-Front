@@ -1,0 +1,28 @@
+.clicker {
+    height: 100px;
+    width: 100px;
+    margin-top: 20px;
+    overflow: hidden;
+    align: center;
+}
+
+.clicker-display {
+    height: 100px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.clicker-button-panel {
+  padding: 15px 32px;
+}
+
+.no-gutters {
+  padding: 15px 32px;
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 5;
+    padding-left: 5;
+  }
+}
