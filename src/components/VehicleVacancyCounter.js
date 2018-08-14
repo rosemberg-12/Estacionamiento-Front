@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/components/VacancyCounter.css';
 import ParkButton from './ParkButton'
-import UnParkButton from './UnParkButton'
 import PropTypes from 'prop-types';
 
 const maxCapacities = {
@@ -36,9 +35,7 @@ class VehicleVacancyCounter extends Component {
       .then(data =>{
         console.log("Response of Vacancy request"+data);
         value=parseInt(data.message , 10 );
-        console.log("Value of Unregister");
-        console.log(value < this.state.maxCapacity)
-        this.setState({
+          this.setState({
           vacancy: value,
           registerButtonEnable: value>0,
           unRegisterButtonEnable: value < this.state.maxCapacity
@@ -57,6 +54,13 @@ class VehicleVacancyCounter extends Component {
     return "";
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(this.props.shouldUpdate===true){
+      this.props.updateCountContainer(false);
+      this.updateCountValue();
+    }
+}
+
   componentDidMount(){
     this.updateCountValue();
   }
@@ -73,8 +77,6 @@ class VehicleVacancyCounter extends Component {
         </div>
         <div className="no-gutters d-flex flex-row">
           <ParkButton kindOfVehicle={this.state.kindOfVehicle} enableButton={this.state.registerButtonEnable}
-            updateCount={this.updateCountValue}/>
-          <UnParkButton kindOfVehicle={this.state.kindOfVehicle} enableButton={this.state.unRegisterButtonEnable}
             updateCount={this.updateCountValue}/>
         </div>
       </div>

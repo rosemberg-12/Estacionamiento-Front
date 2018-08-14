@@ -21,7 +21,6 @@ class UnParkModal extends Component {
     super(props);
     this.state={
       openModal:props.openModal,
-      kindOfVehicle:props.kindOfVehicle,
       numberPlate: ""
     }
     this.getPriceInformation=this.getPriceInformation.bind(this);
@@ -47,8 +46,7 @@ class UnParkModal extends Component {
     }
     else{
       const vehicle={
-        numberPlate:this.state.numberPlate,
-        kindOfVehicle: this.state.kindOfVehicle
+        numberPlate:this.state.numberPlate
       };
       this.props.unRegisterAction(vehicle);
     }
@@ -56,10 +54,10 @@ class UnParkModal extends Component {
 
   getModalTitle(){
     if(this.props.price!==0){
-      return (<h2>{this.state.kindOfVehicle} Unparked !!</h2>);
+      return (<h2>Vehicle Unparked !!</h2>);
     }
     else{
-      return (<h2>{this.state.kindOfVehicle} Unpark</h2>);
+      return (<h2>Vehicle Unpark</h2>);
     }
   }
 
@@ -89,7 +87,7 @@ class UnParkModal extends Component {
   getNumberPlateInput(){
     if(this.props.price!==0){
       return (<div className="form-group">
-                <label>Number of plate of unparked car</label>
+                <label>Number of plate of unparked vehicle</label>
                 <input type="text" className="form-control" id="numberPlate" name="numberPlate" onChange={this.handleChange}
                 aria-describedby="numberPlate" autoComplete="off" readOnly/>
               </div>);
@@ -106,7 +104,7 @@ class UnParkModal extends Component {
   componentDidUpdate(prevProps, prevState){
     if(prevState.openModal!==this.props.openModal){
       this.setState({
-        openModal:this.props.openModal,
+        openModal:this.props.openModal
       });
     }
   }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import UnParkModal from './UnParkModal'
+import '../styles/components/UnParkButton.css';
+
 
 //Props to receive, *kindOfVehicle*, *enableButton*{to define if I as button am enable} and
 //*updateCount*, function to update count from vacancy counter
@@ -8,9 +10,8 @@ class UnParkButton extends Component {
   constructor(props){
     super(props);
     this.state={
-      enableButton:props.enableButton,
+      enableButton:true,
       openUnParkModal:false,
-      kindOfVehicle: props.kindOfVehicle,
       price: 0
     };
     this.unRegisterAction = this.unRegisterAction.bind(this);
@@ -19,8 +20,7 @@ class UnParkButton extends Component {
   }
 
   unRegisterAction(vehicle) {
-    if("Car"===vehicle.kindOfVehicle || "Motorcycle"===this.state.kindOfVehicle){
-      console.log("Vehicle aaded "+vehicle.numberPlate);
+      console.log("unRegisterAction");
       fetch('http://localhost:8080/unregisterVehicle', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -34,9 +34,9 @@ class UnParkButton extends Component {
         }else{
           alert("the car with number plate '"+vehicle.numberPlate+"' could not be unparked, "+data.messageException);
         }
-        this.props.updateCount();
+        this.props.updateCount(true);
       });
-    }
+
   }
 
   openModalAction(){
@@ -57,12 +57,12 @@ class UnParkButton extends Component {
 
   render() {
     return (
-      <div className="col-md">
-      <button className="btn btn-danger btn-block" id="Remove" disabled={!this.state.enableButton} onClick={this.openModalAction}>
-        <i className="fa fa-plus fa-2x">Remove</i>
+      <div className="container-unpark">
+      <button className="circle-button btn-danger btn-block" id="Remove" disabled={!this.state.enableButton} onClick={this.openModalAction}>
+        <i className="fa fa-plus fa-2x">Remove Vehicle</i>
       </button>
-      <UnParkModal kindOfVehicle={this.state.kindOfVehicle} openModal={this.state.openUnParkModal}
-        unRegisterAction={this.unRegisterAction} closeModalAction={this.closeModalAction} price={this.state.price}/>
+      <UnParkModal openModal={this.state.openUnParkModal} unRegisterAction={this.unRegisterAction}
+        closeModalAction={this.closeModalAction} price={this.state.price}/>
       </div>
     );
   }
