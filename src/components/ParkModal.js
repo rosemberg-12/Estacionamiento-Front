@@ -46,7 +46,6 @@ class ParkModal extends Component {
       cc: this.state.cc,
       kindOfVehicle: this.state.kindOfVehicle
     };
-    this.props.closeModalAction();
     this.props.registerAction(vehicle);
 }
 

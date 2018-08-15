@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import ParkModal from './ParkModal'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 //Props to receive, *kindOfVehicle*, *enableButton*{to define if I as button am enable} and
 //*updateCount*, function to update count from vacancy counter
+
+// place where you'd like in your app
+
 class ParkButton extends Component {
 
   constructor(props){
@@ -10,18 +14,23 @@ class ParkButton extends Component {
     this.state={
       enableButton:props.enableButton,
       openParkModal:false,
-      kindOfVehicle: props.kindOfVehicle
+      kindOfVehicle: props.kindOfVehicle,
+      showSuccess: false,
+      showError: false,
+      messageError:""
     };
     this.registerAction = this.registerAction.bind(this);
     this.getRegisterVehicleBody=this.getRegisterVehicleBody.bind(this);
     this.openModalAction=this.openModalAction.bind(this);
     this.closeModalAction=this.closeModalAction.bind(this);
+    this.showSuccess=this.showSuccess.bind(this);
+    this.closeSuccess=this.closeSuccess.bind(this);
+    this.showError=this.showError.bind(this);
+    this.closeError=this.closeError.bind(this);
   }
 
   registerAction(vehicle) {
-    console.log(vehicle);
     if("Car"===vehicle.kindOfVehicle || "Motorcycle"===this.state.kindOfVehicle){
-      console.log("Vehicle aaded "+vehicle.numberPlate);
       fetch('http://localhost:8080/registerVehicle', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -29,14 +38,13 @@ class ParkButton extends Component {
       }).then(function(response) {
         return response.json();
       }).then((data)=> {
-        console.log("Json Response register action");
-        console.log(data);
         if(data.response===true){
-          alert("Vehicle register");
+          this.showSuccess();
+          this.closeModalAction();
         }else{
-          alert("the car could not be registered, "+data.messageException);
+          this.setState({ messageError:"The vehicle could not be registered, "+data.messageException});
+          this.showError();
         }
-        this.closeModalAction();
         this.props.updateCount();
       });
     }
@@ -57,7 +65,30 @@ class ParkButton extends Component {
   }
 
   closeModalAction(){
+    console.log("Closing modal");
     this.setState({ openParkModal:false });
+  }
+
+  showSuccess(){
+    this.setState({
+      showSuccess:true
+    })
+  }
+  closeSuccess(){
+    this.setState({
+      showSuccess:false
+    })
+  }
+
+  showError(){
+    this.setState({
+      showError:true
+    })
+  }
+  closeError(){
+    this.setState({
+      showError:false
+    })
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -69,6 +100,7 @@ class ParkButton extends Component {
   }
 
   render() {
+    console.log("Status of modal")
     return (
       <div className="col-md">
       <button className="btn btn-success btn-block" id="Add" disabled={!this.state.enableButton} onClick={this.openModalAction}>
@@ -76,6 +108,12 @@ class ParkButton extends Component {
       </button>
       <ParkModal kindOfVehicle={this.state.kindOfVehicle} openModal={this.state.openParkModal}
         registerAction={this.registerAction} closeModalAction={this.closeModalAction}/>
+      <SweetAlert success onConfirm={this.closeSuccess} show={this.state.showSuccess}>
+           Vehicle parked!
+        </SweetAlert>
+        <SweetAlert error onConfirm={this.closeError} show={this.state.showError}>
+             {this.state.messageError}
+        </SweetAlert>
       </div>
     );
   }
@@ -86,5 +124,4 @@ ParkButton.defaultProps={
   kindOfVehicle:"",
   openParkModal:false
 }
-
 export default ParkButton;

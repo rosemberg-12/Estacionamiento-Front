@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import UnParkModal from './UnParkModal'
 import '../styles/components/UnParkButton.css';
+import SweetAlert from 'react-bootstrap-sweetalert'
+
 
 
 //Props to receive, *kindOfVehicle*, *enableButton*{to define if I as button am enable} and
@@ -12,15 +14,17 @@ class UnParkButton extends Component {
     this.state={
       enableButton:true,
       openUnParkModal:false,
-      price: 0
+      price: 0,
+      showError: false
     };
     this.unRegisterAction = this.unRegisterAction.bind(this);
     this.openModalAction=this.openModalAction.bind(this);
     this.closeModalAction=this.closeModalAction.bind(this);
+    this.showError=this.showError.bind(this);
+    this.closeError=this.closeError.bind(this);
   }
 
   unRegisterAction(vehicle) {
-      console.log("unRegisterAction");
       fetch('http://localhost:8080/unregisterVehicle', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -28,11 +32,11 @@ class UnParkButton extends Component {
       }).then(function(response) {
         return response.json();
       }).then((data)=> {
-        console.log("Json Response register action"+data.response);
         if(data.response===true){
           this.setState({price:data.costOfParking})
         }else{
-          alert("the car with number plate '"+vehicle.numberPlate+"' could not be unparked, "+data.messageException);
+          this.setState({ messageError:"The Vehicle with number plate '"+vehicle.numberPlate+"' could not be unparked, "+data.messageException});
+          this.showError();
         }
         this.props.updateCount(true);
       });
@@ -45,6 +49,17 @@ class UnParkButton extends Component {
 
   closeModalAction(){
     this.setState({ openUnParkModal:false, price: 0 });
+  }
+
+  showError(){
+    this.setState({
+      showError:true
+    })
+  }
+  closeError(){
+    this.setState({
+      showError:false
+    })
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -63,6 +78,9 @@ class UnParkButton extends Component {
       </button>
       <UnParkModal openModal={this.state.openUnParkModal} unRegisterAction={this.unRegisterAction}
         closeModalAction={this.closeModalAction} price={this.state.price}/>
+        <SweetAlert error onConfirm={this.closeError} show={this.state.showError}>
+             {this.state.messageError}
+        </SweetAlert>
       </div>
     );
   }
