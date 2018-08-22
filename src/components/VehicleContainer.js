@@ -16,7 +16,6 @@ class VehicleContainer extends Component {
   }
 
   updateCountValue(value){
-    console.log("Updating");
     this.setState({
       updateValue:value
     });
@@ -27,7 +26,7 @@ class VehicleContainer extends Component {
           <div className="d-md-flex flex-md-4 w-100 my-md-3 pl-md-3">
             <VehicleSlide updateCountContainer={this.updateCountValue} shouldUpdate={this.state.updateValue}
               name="carSlide" id="carSlide" kindOfVehicle="Car"/>
-            <div className="col-md">
+            <div className="col-md py-3">
                 <TCRM/>
                 <UnParkButton updateCount={this.updateCountValue}/>
               </div>

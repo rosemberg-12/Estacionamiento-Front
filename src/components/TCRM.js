@@ -51,7 +51,6 @@ class TCRM extends Component {
       fetch(url)
       .then(response => response.json())
       .then(data =>{
-        console.log("Response of TCRM"+data);
         this.setState({
             TCRM:data.tcrm.value,
             unit:data.tcrm.unit

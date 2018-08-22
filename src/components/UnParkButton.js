@@ -25,17 +25,24 @@ class UnParkButton extends Component {
   }
 
   unRegisterAction(vehicle) {
+      var error=false;
       fetch('http://localhost:8080/unregisterVehicle', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({"numberPlate": vehicle.numberPlate})
       }).then(function(response) {
-        return response.json();
+        if(response.ok){
+          return response.json();
+        }
+        else{
+          error=true;
+          return response.text();
+        }
       }).then((data)=> {
-        if(data.response===true){
+        if(!error){
           this.setState({price:data.costOfParking})
         }else{
-          this.setState({ messageError:"The Vehicle with number plate '"+vehicle.numberPlate+"' could not be unparked, "+data.messageException});
+          this.setState({ messageError:"The Vehicle with number plate '"+vehicle.numberPlate+"' could not be unparked, "+data});
           this.showError();
         }
         this.props.updateCount(true);

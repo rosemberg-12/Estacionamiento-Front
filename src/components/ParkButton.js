@@ -31,18 +31,24 @@ class ParkButton extends Component {
 
   registerAction(vehicle) {
     if("Car"===vehicle.kindOfVehicle || "Motorcycle"===this.state.kindOfVehicle){
+      var error=false;
       fetch('http://localhost:8080/registerVehicle', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: this.getRegisterVehicleBody(vehicle)
       }).then(function(response) {
-        return response.json();
+        if(response.ok){
+        }
+        else{
+          error=true;
+          return response.text();
+        }
       }).then((data)=> {
-        if(data.response===true){
+        if(!error){
           this.showSuccess();
           this.closeModalAction();
         }else{
-          this.setState({ messageError:"The vehicle could not be registered, "+data.messageException});
+          this.setState({ messageError:"The vehicle could not be registered, "+data});
           this.showError();
         }
         this.props.updateCount();
@@ -65,7 +71,6 @@ class ParkButton extends Component {
   }
 
   closeModalAction(){
-    console.log("Closing modal");
     this.setState({ openParkModal:false });
   }
 
@@ -100,7 +105,6 @@ class ParkButton extends Component {
   }
 
   render() {
-    console.log("Status of modal")
     return (
       <div className="col-md">
       <button className="btn btn-success btn-block" id="Add" disabled={!this.state.enableButton} onClick={this.openModalAction}>

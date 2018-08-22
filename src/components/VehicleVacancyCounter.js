@@ -29,11 +29,13 @@ class VehicleVacancyCounter extends Component {
       alert("Kind of vehicle unknow");
     }
     else{
-      console.log("Vacancy URL "+url);
       fetch(url)
-      .then(response => response.json())
+      .then(response =>{
+        if(response.ok){
+          return response.json();
+        }
+      })
       .then(data =>{
-        console.log("Response of Vacancy request"+data);
         value=parseInt(data.message , 10 );
           this.setState({
           vacancy: value,
